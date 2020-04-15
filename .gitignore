@@ -16,3 +16,4 @@ web-report/
 /package-lock.json
 /.idea/
 /_WIP_/*
+!/_WIP_/TODO.txt

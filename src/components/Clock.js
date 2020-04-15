@@ -1,24 +1,54 @@
 import React from 'react'
-import { View, StyleSheet, Text } from 'react-native'
+import { Dimensions, View, StyleSheet, Text } from 'react-native'
 import RootStyles from '../styles/root'
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
 class Clock extends React.Component {
 
+	getHintColor(time, defaultColor = '#ffffff') {
+
+		if (time >= 11) // Because we want to color the 10.XX range also, which doesn't match > 10
+			return defaultColor;
+
+		const RANGE_START_HUE = 35;
+		const RANGE_END_HUE = -5;
+
+		let progress = Math.abs(RANGE_END_HUE - RANGE_START_HUE);
+
+		if (time > 0)
+			progress *= 1 - (time / 10);
+		else
+			progress = 1;
+
+		let hue = 0;
+
+		if (RANGE_START_HUE < RANGE_END_HUE)
+			hue = RANGE_START_HUE + progress;
+		else
+			hue = RANGE_START_HUE - progress;
+
+		return `hsl(${hue}, 95%, 60%)`;
+	}
+
 	render() {
 
-		// Count up or down
-		let countDirection = 'down';
+		// Lap
+		let lap = -1;
 
-		if (typeof this.props.countDirection !== 'undefined'
-			&& this.props.countDirection === 'up') {
-				countDirection = 'up';
-		}
+			if (typeof this.props.lap !== 'undefined' && this.props.lap !== null)
+				lap = this.props.lap;
+
+		// Use color hint or not (<10s, <5s)
+		let useColorHint = this.props.useColorHint === true;
 
 		// Time
 		let time = this.props.time || 0;
 
-		time = Math.trunc(time); // No milliseconds or what
+		// Clock color
+		let clockColor = useColorHint ? this.getHintColor(time, '#ffffff') : '#ffffff';
 
+		// h:m:s
 		let hours = Math.trunc(time / 3600);
 			time -= hours * 3600;
 
@@ -26,24 +56,25 @@ class Clock extends React.Component {
 			time -= minutes * 60;
 			minutes = minutes.toString().padStart(2, '0');
 
-		let seconds = time;
+		let seconds = Math.trunc(time);
+			time -= seconds;
 			seconds = seconds.toString().padStart(2, '0');
 
-		// Clock color
-		let clockColor = 'white';
-
-			if (countDirection === 'down') {
-				if (time <= 5)
-					clockColor = 'red';
-				else if (time <= 10)
-					clockColor = 'orange';
-			}
+		let milliseconds = time;
+			milliseconds = Math.trunc(milliseconds * 1000);
+			milliseconds = milliseconds.toString().padStart(3, '0');
 
 		return (
 			<View style={StyleSheet.flatten([styles.container, this.props.style])}>
-				<View style={styles.clockContainer}>
-					{hours > 0 && <Text style={styles.hours}>{hours}</Text>}
+				<View>
+					<View style={StyleSheet.flatten([styles.sideInfoContainer, styles.hours])}>
+						<Text style={StyleSheet.flatten([styles.sideInfo, {color: clockColor}])}>{hours > 0 ? hours : ' '}</Text>
+					</View>
 					<Text style={StyleSheet.flatten([styles.time, {color: clockColor}])}>{minutes}:{seconds}</Text>
+					<View style={styles.sideInfoContainer}>
+						<Text style={styles.sideInfo}>{lap > -1 ? lap : ' '}</Text>
+						<Text style={StyleSheet.flatten([styles.sideInfo, {color: clockColor}])}>{milliseconds > 0 ? milliseconds : ' '}</Text>
+					</View>
 				</View>
 			</View>
 		);
@@ -52,23 +83,27 @@ class Clock extends React.Component {
 
 const styles = StyleSheet.create({
 	container: {
-		// flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
-		borderColor: 'green',
-		borderWidth: 1,
 		marginBottom: RootStyles.gutterDefault
 	},
-	hours: {
-		color: '#ffffff',
-		fontSize: RootStyles.textSizeDefault
+	sideInfoContainer: {
+		flexDirection: 'row',
+		justifyContent: 'space-between'
 	},
-	clockContainer: {
-		alignItems: 'flex-end'
+	sideInfo: {
+		color: '#ffffff',
+		fontSize: RootStyles.textSizeDefault,
+		fontVariant: ['tabular-nums']
+	},
+	hours: {
+		justifyContent: 'flex-end'
 	},
 	time: {
 		color: '#ffffff',
-		fontSize: 100
+		fontSize: 100,
+		fontWeight: SCREEN_WIDTH > 320 ? '700' : '600',
+		fontVariant: ['tabular-nums']
 	}
 });
 

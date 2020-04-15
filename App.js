@@ -1,12 +1,12 @@
 import React from 'react';
 import { StatusBar, View } from 'react-native'
-import WatchView from './src/components/WatchView';
+import TimerView from './src/components/TimerView';
 
 export default function App() {
-  return (
-  	<View style={{flex:1}}>
-	    <StatusBar barStyle="light-content" />
-	    <WatchView />
-    </View>
-  );
+	return (
+		<View style={{flex:1}}>
+			<StatusBar barStyle="light-content" />
+			<TimerView />
+		</View>
+	);
 }
