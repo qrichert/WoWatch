@@ -17,9 +17,16 @@ class TimerView extends React.Component {
 	constructor(props) {
 		super(props);
 
+		this.m_prepTime = 3;
+
 		this.m_startTime = null; // Last click on start basically
-		this.m_currentTimerStartTime = null; // Current countdown
-		this.m_sequence = null; // Sort of queue with timers left
+		this.m_sequence = null; // Sequence selected to be played
+		this.m_currentSequence = null; // Sort of queue with timers one after the other
+		this.m_sequenceDuration = null;
+		this.m_sequenceIsInfinite = null;
+
+		this.m_currentLap = null;
+		this.m_currentTimerIndex = null;
 
 		this.state = initialState;
 	}
@@ -36,93 +43,133 @@ class TimerView extends React.Component {
 		if (!Array.isArray(sequence))
 			sequence = [sequence];
 
-		// We remove a ms just so it doesn't flicker from like 00:03 to 00:02 (as 00:03 would only by shown for 1 ms)
-		const PREP_TIME = 3 - 0.001;
-		sequence = sequence.map(timer => timer - 0.001);
-
 		let currentTime = this.getCurrentTime();
 
+		// Timing
 		this.m_startTime = currentTime;
 		this.m_currentTimerStartTime = currentTime;
 
-		// By default, any sequence starts with a 3s prep time
-		this.m_sequence = [PREP_TIME, ...sequence]; // Add 3 seconds for prep on start
+		// Sequence
+		this.m_sequence = sequence;
+		this.m_currentSequence = [this.m_prepTime, ...sequence]; // Add 3 seconds for prep on start
 
-		// Sequence duration to calculate lap count
-		let sequenceDuration = 0;
+		// Sequence duration
+		this.m_sequenceDuration = 0;
 
 			for (let i of sequence)
-				sequenceDuration += i;
+				this.m_sequenceDuration += i;
 
+		// Sequence is infinite
+		this.m_sequenceIsInfinite = infinite;
+
+		this.m_currentLap = 0; // Prep time is lap 0
+		this.m_currentTimerIndex = -1; // Prep time has no index in sequence
+
+		// Set initial state
 		this.setState({
 			timerRunning: true,
-			currentTime: this.m_sequence[0],
-			currentLap: infinite ? 0 : -1
+			currentTime: this.m_currentSequence[0] - 0.001, // - 0.001 to avoid flicker from 00:03.000 to 00:02.999,
+			currentLap: this.m_sequenceIsInfinite ? 0 : -1
 		});
 
-		let timerLoop = () => {
-
-			// If it was canceled
-			if (this.m_startTime === null|| this.m_currentTimerStartTime === null || this.m_sequence === null)
-				return;
-
-			currentTime = this.getCurrentTime();
-
-			let timerDuration = this.m_sequence[0];
-			let timeElapsedSinceStart = currentTime - this.m_startTime - PREP_TIME; // Whole sequence
-			let timeElapsed = currentTime - this.m_currentTimerStartTime; // Current timer
-			let timeRemaining = timerDuration - timeElapsed;
-
-			// TODO: Bad, if app pauses it will be wrong, calculate using sequence duration for infinite
-			if (timeRemaining < 0) { // Go to next or stop if no next
-
-				Vibration.vibrate();
-
-				this.m_sequence.shift();
-
-				if (this.m_sequence.length === 0) {
-
-					if (infinite) {
-						// If infinite, go for another un
-						this.m_sequence = [...sequence];
-
-					} else {
-						// Else quit
-						this.stopTimer();
-						return;
-					}
-				}
-
-				this.m_currentTimerStartTime = currentTime;
-				timerDuration = this.m_sequence[0];
-				timeElapsed = currentTime - this.m_currentTimerStartTime;
-				timeRemaining = timerDuration - timeElapsed;
-			}
-
-			let currentLap = infinite ? 0 : -1;
-
-				// We calculate it dynamically from start time instead of just incrementing
-				// Se it's always accurate even if app pauses
-				if (infinite && timeElapsedSinceStart > 0)
-					currentLap = Math.trunc(timeElapsedSinceStart / sequenceDuration) + 1; // + 1 cause 0-0.9 range = 1st lap
-
-			this.setState({
-				currentTime: timeRemaining,
-				currentLap: currentLap
-			});
-
-			requestAnimationFrame(timerLoop);
-		};
-
-		requestAnimationFrame(timerLoop);
+		requestAnimationFrame(() => { this.timerLoop(); } );
 	}
 
 	stopTimer() {
 		this.m_startTime = null;
-		this.m_currentTimerStartTime = null;
 		this.m_sequence = null;
+		this.m_currentSequence = null;
+		this.m_sequenceDuration = null;
+		this.m_sequenceIsInfinite = null;
+
+		this.m_currentLap = null;
+		this.m_currentTimerIndex = null;
 
 		this.setState({ ...initialState });
+	}
+
+	/**
+	 * timerLoop() is entirely based on startTime, so that it works
+	 * even if the event loop is paused by the app being put in the background.
+	 * On wake up it will just compute the current state based on startTime.
+	 */
+	timerLoop() {
+
+		// If it was canceled
+		if (this.m_startTime === null
+		    || this.m_sequence === null
+		    || this.m_currentSequence === null
+		    || this.m_sequenceDuration === null
+		    || this.m_sequenceIsInfinite === null)
+			return;
+
+		let currentTime = this.getCurrentTime();
+		let totalTimeElapsed = currentTime - this.m_startTime;
+
+		if (!this.m_sequenceIsInfinite
+		    && totalTimeElapsed > (this.m_sequenceDuration + this.m_prepTime)) {
+			this.stopTimer();
+			Vibration.vibrate(); // Make it vibrate on end
+			return;
+		}
+
+		// Current lap
+		let currentLap = 0;
+
+		if (totalTimeElapsed > this.m_prepTime)
+			currentLap = Math.trunc((totalTimeElapsed - this.m_prepTime) / this.m_sequenceDuration) + 1;
+
+		// Time remaining
+		let currentTimerIndex = -1; // -1 = prepTime
+		let timeRemainingInCurrentTimer = 0;
+
+		if (totalTimeElapsed <= this.m_prepTime) {
+			timeRemainingInCurrentTimer = this.m_prepTime - totalTimeElapsed;
+		} else {
+			let currentSequenceTimeElapsed = totalTimeElapsed - this.m_prepTime; // Total sequence time elapsed (i.e. where we're at in the universe of sequences)
+				currentSequenceTimeElapsed -= (this.m_sequenceDuration * (currentLap - 1)); // Current sequence time elapsed (i.e. where we're at in current sequence)
+
+			// Now we know where we are inside the current sequence (x / sequenceDuration)
+			// So what we do now is we extract the index we're in
+			// Like in a sequence [30, 15]:
+			// currentSequenceTimeElapsed = 28 -> index 0
+			// currentSequenceTimeElapsed = 42 -> index 1
+
+			let sumDurationOfPreviousTimers = 0;
+			currentTimerIndex = 0;
+			for (let el of this.m_sequence) {
+				if (currentSequenceTimeElapsed <= (sumDurationOfPreviousTimers + el))
+					break; // Found it
+
+				sumDurationOfPreviousTimers += el;
+				currentTimerIndex++; // Could be next one
+			}
+
+			// So now we have the index
+			// And we can deduce the time the time left in the current timer by subtracting time elapsed from timer duration
+			timeRemainingInCurrentTimer = currentSequenceTimeElapsed - sumDurationOfPreviousTimers;
+			timeRemainingInCurrentTimer = this.m_sequence[currentTimerIndex] - timeRemainingInCurrentTimer;
+		}
+
+		// Now we need to detect lap change or index change to trigger vibration & prevent flicker
+
+		if (this.m_currentLap !== currentLap
+			|| this.m_currentTimerIndex !== currentTimerIndex) {
+
+			this.m_currentLap = currentLap;
+			this.m_currentTimerIndex = currentTimerIndex;
+
+			timeRemainingInCurrentTimer -= 0.001; // Prevent flicker
+
+			Vibration.vibrate();
+		}
+
+		this.setState({
+			currentTime: timeRemainingInCurrentTimer,
+			currentLap: this.m_sequenceIsInfinite ? currentLap : -1
+		});
+
+		requestAnimationFrame(() => { this.timerLoop(); })
 	}
 
 	render() {
