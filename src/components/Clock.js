@@ -28,6 +28,8 @@ class Clock extends React.Component {
 		else
 			hue = RANGE_START_HUE - progress;
 
+		hue = Math.trunc(hue); // No decimals
+
 		return `hsl(${hue}, 95%, 60%)`;
 	}
 

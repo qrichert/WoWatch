@@ -1,8 +1,10 @@
 import React from 'react'
-import { Platform, SafeAreaView, StatusBar, StyleSheet, Vibration, View } from 'react-native';
+import { Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, Vibration, View } from 'react-native';
 import RootStyles from '../styles/root'
 import Clock from './Clock'
 import CustomButton from './CustomButton';
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
 const initialState = {
 	timerRunning: false,
@@ -15,7 +17,8 @@ class TimerView extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.m_startTime = null;
+		this.m_startTime = null; // Last click on start basically
+		this.m_currentTimerStartTime = null; // Current countdown
 		this.m_sequence = null; // Sort of queue with timers left
 
 		this.state = initialState;
@@ -34,19 +37,22 @@ class TimerView extends React.Component {
 			sequence = [sequence];
 
 		// We remove a ms just so it doesn't flicker from like 00:03 to 00:02 (as 00:03 would only by shown for 1 ms)
+		const PREP_TIME = 3 - 0.001;
 		sequence = sequence.map(timer => timer - 0.001);
 
-		this.m_startTime = this.getCurrentTime();
+		let currentTime = this.getCurrentTime();
+
+		this.m_startTime = currentTime;
+		this.m_currentTimerStartTime = currentTime;
 
 		// By default, any sequence starts with a 3s prep time
-		this.m_sequence = [(3 - 0.001)]; // Add 3 seconds for prep on start
+		this.m_sequence = [PREP_TIME, ...sequence]; // Add 3 seconds for prep on start
 
-			// If infinite, the real sequence will be added after the 3s have elapsed
-			// If not infinite, nothing will be added, so we add the sequence right away
-			// Doing it this way (instead of always adding the real sequence) makes it way easier to start
-			// the lap counter (infinite only) at 0 and pass it to 1 automatically on start of first real sequence
-			if (!infinite)
-				this.m_sequence = [...this.m_sequence, ...sequence];
+		// Sequence duration to calculate lap count
+		let sequenceDuration = 0;
+
+			for (let i of sequence)
+				sequenceDuration += i;
 
 		this.setState({
 			timerRunning: true,
@@ -57,15 +63,17 @@ class TimerView extends React.Component {
 		let timerLoop = () => {
 
 			// If it was canceled
-			if (this.m_startTime === null || this.m_sequence === null)
+			if (this.m_startTime === null|| this.m_currentTimerStartTime === null || this.m_sequence === null)
 				return;
 
+			currentTime = this.getCurrentTime();
+
 			let timerDuration = this.m_sequence[0];
-			let timeElapsed = this.getCurrentTime() - this.m_startTime;
+			let timeElapsedSinceStart = currentTime - this.m_startTime - PREP_TIME; // Whole sequence
+			let timeElapsed = currentTime - this.m_currentTimerStartTime; // Current timer
 			let timeRemaining = timerDuration - timeElapsed;
 
-			// console.log([timerDuration, timeElapsed, timeRemaining]);
-
+			// TODO: Bad, if app pauses it will be wrong, calculate using sequence duration for infinite
 			if (timeRemaining < 0) { // Go to next or stop if no next
 
 				Vibration.vibrate();
@@ -78,10 +86,6 @@ class TimerView extends React.Component {
 						// If infinite, go for another un
 						this.m_sequence = [...sequence];
 
-						this.setState(prevState => ({
-							currentLap: prevState.currentLap + 1
-						}));
-
 					} else {
 						// Else quit
 						this.stopTimer();
@@ -89,14 +93,22 @@ class TimerView extends React.Component {
 					}
 				}
 
-				this.m_startTime = this.getCurrentTime();
+				this.m_currentTimerStartTime = currentTime;
 				timerDuration = this.m_sequence[0];
-				timeElapsed = this.getCurrentTime() - this.m_startTime;
+				timeElapsed = currentTime - this.m_currentTimerStartTime;
 				timeRemaining = timerDuration - timeElapsed;
 			}
 
+			let currentLap = infinite ? 0 : -1;
+
+				// We calculate it dynamically from start time instead of just incrementing
+				// Se it's always accurate even if app pauses
+				if (infinite && timeElapsedSinceStart > 0)
+					currentLap = Math.trunc(timeElapsedSinceStart / sequenceDuration) + 1; // + 1 cause 0-0.9 range = 1st lap
+
 			this.setState({
-				currentTime: timeRemaining
+				currentTime: timeRemaining,
+				currentLap: currentLap
 			});
 
 			requestAnimationFrame(timerLoop);
@@ -107,6 +119,7 @@ class TimerView extends React.Component {
 
 	stopTimer() {
 		this.m_startTime = null;
+		this.m_currentTimerStartTime = null;
 		this.m_sequence = null;
 
 		this.setState({ ...initialState });
@@ -118,7 +131,7 @@ class TimerView extends React.Component {
 				<View style={styles.container}>
 					<Clock style={styles.clock} time={this.state.currentTime} lap={this.state.currentLap} useColorHint={this.state.timerRunning} />
 					<View style={styles.buttonsContainer}>
-						<CustomButton text="30 s" onPress={() => { this.startTimer(30); }} />
+						<CustomButton text="30s" onPress={() => { this.startTimer(30); }} />
 						<CustomButton text="1 min" onPress={() => { this.startTimer(60); }} />
 						<CustomButton text="2 min" onPress={() => { this.startTimer(120); }} />
 						<CustomButton text="30s/15s" backdropColor={RootStyles.colorPurpleAcid} highlightColor={'white'} onPress={() => { this.startTimer([30, 15], true); }} />
@@ -170,7 +183,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: 'row',
 		flexWrap: 'wrap',
-		justifyContent: 'space-between',
+		justifyContent: SCREEN_WIDTH > 500 ? 'center' : 'space-between',
 		alignItems: 'center'
 	},
 	stopButtonContainer: {
@@ -181,6 +194,7 @@ const styles = StyleSheet.create({
 		marginTop: RootStyles.gutterDefault * 2
 	},
 	buttonPlaceholder: {
+		display: SCREEN_WIDTH > 500 ? 'none' : null,
 		width: RootStyles.buttonSize,
 		marginHorizontal: RootStyles.gutterDefault / 2
 	}
