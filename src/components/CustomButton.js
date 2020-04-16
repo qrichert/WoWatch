@@ -52,8 +52,8 @@ class CustomButton extends React.Component {
 
 		return (
 			<TouchableOpacity
+				{...this.props}
 				style={StyleSheet.flatten([styles.container, {borderColor: backdropColor}, this.props.style])}
-				onPress={this.props.onPress}
 				disabled={disabled}
 			>
 				<View style={StyleSheet.flatten([styles.backdrop, {backgroundColor: backdropColor}])}>

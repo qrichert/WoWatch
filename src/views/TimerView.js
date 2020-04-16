@@ -1,8 +1,8 @@
 import React from 'react'
 import { Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, Vibration, View } from 'react-native';
 import RootStyles from '../styles/root'
-import Clock from './Clock'
-import CustomButton from './CustomButton';
+import Clock from '../components/Clock'
+import CustomButton from '../components/CustomButton';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
