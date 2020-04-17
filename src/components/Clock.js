@@ -67,15 +67,15 @@ class Clock extends React.Component {
 			milliseconds = milliseconds.toString().padStart(3, '0');
 
 		return (
-			<View style={StyleSheet.flatten([styles.container, this.props.style])}>
+			<View style={[styles.container, this.props.style]}>
 				<View>
-					<View style={StyleSheet.flatten([styles.sideInfoContainer, styles.hours])}>
-						<Text style={StyleSheet.flatten([styles.sideInfo, {color: clockColor}])}>{hours > 0 ? hours : ' '}</Text>
+					<View style={[styles.sideInfoContainer, styles.hours]}>
+						<Text style={[styles.sideInfo, {color: clockColor}]}>{hours > 0 ? hours : ' '}</Text>
 					</View>
-					<Text style={StyleSheet.flatten([styles.time, {color: clockColor}])}>{minutes}:{seconds}</Text>
+					<Text style={[styles.time, {color: clockColor}]}>{minutes}:{seconds}</Text>
 					<View style={styles.sideInfoContainer}>
 						<Text style={styles.sideInfo}>{lap > -1 ? lap : ' '}</Text>
-						<Text style={StyleSheet.flatten([styles.sideInfo, {color: clockColor}])}>{milliseconds > 0 ? milliseconds : ' '}</Text>
+						<Text style={[styles.sideInfo, {color: clockColor}]}>{milliseconds > 0 ? milliseconds : ' '}</Text>
 					</View>
 				</View>
 			</View>
