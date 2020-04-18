@@ -12,7 +12,7 @@ export default function AppNavigator() {
 	return (
 		<NavigationContainer theme={DarkTheme}>
 			<Tab.Navigator
-				initialRouteName="Settings"
+				initialRouteName="Timer"
 				tabBarOptions={{
 					activeTintColor: '#ff9f0b',
 					showLabels: false,

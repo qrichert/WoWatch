@@ -247,21 +247,23 @@ const styles = StyleSheet.create({
 		margin: 'auto'
 	},
 	clock: {
-		flex: 1
+		flex: 1,
+		marginBottom: RootStyles.gutterDefault
 	},
 	buttonsContainer: {
 		flex: 1,
 		flexDirection: 'row',
 		flexWrap: 'wrap',
 		justifyContent: SCREEN_WIDTH > 500 ? 'center' : 'space-between',
-		alignItems: 'center'
+		alignItems: 'center',
+		marginVertical: RootStyles.gutterDefault
 	},
 	stopButtonContainer: {
-		flex: 1
+		flex: 0.9
 	},
 	stopButton: {
 		alignSelf: 'center',
-		marginTop: RootStyles.gutterDefault * 2
+		marginTop: RootStyles.gutterDefault
 	},
 	buttonPlaceholder: {
 		display: SCREEN_WIDTH > 500 ? 'none' : null,
