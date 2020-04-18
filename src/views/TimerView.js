@@ -1,5 +1,6 @@
 import React from 'react'
 import { Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, Vibration, View } from 'react-native';
+import { connect } from 'react-redux';
 import RootStyles from '../styles/root'
 import Clock from '../components/Clock'
 import CustomButton from '../components/CustomButton';
@@ -178,28 +179,32 @@ class TimerView extends React.Component {
 				<View style={styles.container}>
 					<Clock style={styles.clock} time={this.state.currentTime} lap={this.state.currentLap} useColorHint={this.state.timerRunning} />
 					<View style={styles.buttonsContainer}>
-						<CustomButton
+						{this.props.timersState.timer30s &&
+						 <CustomButton
 							text="30s"
 							onPress={() => { this.startTimer(30); }}
 							onLongPress={() => { this.startTimer(30, true); }}
-						/>
+						/>}
+						{this.props.timersState.timer1min &&
 						<CustomButton
 							text="1 min"
 							onPress={() => { this.startTimer(60); }}
 							onLongPress={() => { this.startTimer(60, true); }}
-						/>
+						/>}
+						{this.props.timersState.timer2min &&
 						<CustomButton
 							text="2 min"
 							onPress={() => { this.startTimer(120); }}
 							onLongPress={() => { this.startTimer(120, true); }}
-						/>
+						/>}
+						{this.props.timersState.timer30s15s &&
 						<CustomButton
 							text="30s/15s"
 							onPress={() => { this.startTimer([30, 15], true); }}
 							onLongPress={() => { this.startTimer([30, 15]); }}
 							backdropColor={RootStyles.colorPurpleAcid}
 							highlightColor={'white'}
-						/>
+						/>}
 
 						{/*
 							There are max 7 buttons on a line
@@ -265,4 +270,9 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default TimerView;
+// Redux
+const mapStateToProps = state => ({
+	timersState: state.settingsReducer.toggleTimersReducer
+});
+
+export default connect(mapStateToProps)(TimerView);
