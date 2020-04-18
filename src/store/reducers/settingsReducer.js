@@ -9,7 +9,7 @@ import {
 const initialTimersState = {
 	timer30s: true,
 	timer1min: true,
-	timer2min: false,
+	timer2min: true,
 	timer30s15s: true
 };
 
@@ -36,4 +36,5 @@ function toggleTimersReducer(state = initialTimersState, action) {
 }
 
 const rootReducer = combineReducers({ toggleTimersReducer });
+
 export default rootReducer;
