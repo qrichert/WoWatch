@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		// alignItems: 'center',
 		// justifyContent: 'center',
-		backgroundColor: '#000000',
+		// backgroundColor: '#000000',
 		...Platform.select({
 			android: {
 				// StatusBar.currentHeight is Android only, and SafeAreaView is iOS only
