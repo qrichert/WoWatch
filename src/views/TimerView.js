@@ -178,10 +178,28 @@ class TimerView extends React.Component {
 				<View style={styles.container}>
 					<Clock style={styles.clock} time={this.state.currentTime} lap={this.state.currentLap} useColorHint={this.state.timerRunning} />
 					<View style={styles.buttonsContainer}>
-						<CustomButton text="30s" onPress={() => { this.startTimer(30); }} />
-						<CustomButton text="1 min" onPress={() => { this.startTimer(60); }} />
-						<CustomButton text="2 min" onPress={() => { this.startTimer(120); }} />
-						<CustomButton text="30s/15s" backdropColor={RootStyles.colorPurpleAcid} highlightColor={'white'} onPress={() => { this.startTimer([30, 15], true); }} />
+						<CustomButton
+							text="30s"
+							onPress={() => { this.startTimer(30); }}
+							onLongPress={() => { this.startTimer(30, true); }}
+						/>
+						<CustomButton
+							text="1 min"
+							onPress={() => { this.startTimer(60); }}
+							onLongPress={() => { this.startTimer(60, true); }}
+						/>
+						<CustomButton
+							text="2 min"
+							onPress={() => { this.startTimer(120); }}
+							onLongPress={() => { this.startTimer(120, true); }}
+						/>
+						<CustomButton
+							text="30s/15s"
+							onPress={() => { this.startTimer([30, 15], true); }}
+							onLongPress={() => { this.startTimer([30, 15]); }}
+							backdropColor={RootStyles.colorPurpleAcid}
+							highlightColor={'white'}
+						/>
 
 						{/*
 							There are max 7 buttons on a line
