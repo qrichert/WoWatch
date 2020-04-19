@@ -1,6 +1,7 @@
 import React from 'react'
 import { Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, Vibration, View } from 'react-native';
 import { connect } from 'react-redux';
+import AppRoutes from '../navigation/routes/appRoutes';
 import RootStyles from '../styles/root'
 import Clock from '../components/Clock'
 import CustomButton from '../components/CustomButton';
@@ -177,7 +178,13 @@ class TimerView extends React.Component {
 		return (
 			<SafeAreaView style={styles.safeArea}>
 				<View style={styles.container}>
-					<Clock style={styles.clock} time={this.state.currentTime} lap={this.state.currentLap} useColorHint={this.state.timerRunning} />
+					<Clock
+						style={styles.clock}
+						time={this.state.currentTime}
+						lap={this.state.currentLap}
+						useColorHint={this.state.timerRunning}
+						onLongPress={() => { this.props.navigation.navigate(AppRoutes.SETTINGS); }}
+					/>
 					<View style={styles.buttonsContainer}>
 						{this.props.timersState.timer30s &&
 						 <CustomButton

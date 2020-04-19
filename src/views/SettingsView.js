@@ -1,5 +1,5 @@
 import React from 'react'
-import { Platform, SafeAreaView, StatusBar, StyleSheet, Switch, View, Text } from 'react-native';
+import { Platform, SafeAreaView, ScrollView, StatusBar, StyleSheet, Switch, View, Text } from 'react-native';
 import { connect } from 'react-redux';
 import RootStyles from '../styles/root';
 import {
@@ -18,31 +18,39 @@ class SettingsView extends React.Component {
 	render() {
 		return (
 			<SafeAreaView style={styles.safeArea}>
-				<View style={styles.container}>
-					<Text style={{color:'white'}}>30s</Text>
-					<Switch
-						value={this.props.timersState.timer30s}
-						onValueChange={on => { this.toggleTimer(TOGGLE_TIMER_30S, on)}}
-					/>
+				<ScrollView style={styles.container}>
+					<View style={styles.optionContainer}>
+						<Text style={styles.optionText}>30s</Text>
+						<Switch
+							value={this.props.timersState.timer30s}
+							onValueChange={on => { this.toggleTimer(TOGGLE_TIMER_30S, on)}}
+						/>
+					</View>
 
-					<Text style={{color:'white'}}>1 min</Text>
-					<Switch
-						value={this.props.timersState.timer1min}
-						onValueChange={on => { this.toggleTimer(TOGGLE_TIMER_1MIN, on)}}
-					/>
+					<View style={styles.optionContainer}>
+						<Text style={styles.optionText}>1 min</Text>
+						<Switch
+							value={this.props.timersState.timer1min}
+							onValueChange={on => { this.toggleTimer(TOGGLE_TIMER_1MIN, on)}}
+						/>
+					</View>
 
-					<Text style={{color:'white'}}>2 min</Text>
-					<Switch
-						value={this.props.timersState.timer2min}
-						onValueChange={on => { this.toggleTimer(TOGGLE_TIMER_2MIN, on)}}
-					/>
+					<View style={styles.optionContainer}>
+						<Text style={styles.optionText}>2 min</Text>
+						<Switch
+							value={this.props.timersState.timer2min}
+							onValueChange={on => { this.toggleTimer(TOGGLE_TIMER_2MIN, on)}}
+						/>
+					</View>
 
-					<Text style={{color:'white'}}>30s/15s</Text>
-					<Switch
-						value={this.props.timersState.timer30s15s}
-						onValueChange={on => { this.toggleTimer(TOGGLE_TIMER_30S_15S, on)}}
-					/>
-				</View>
+					<View style={styles.optionContainer}>
+						<Text style={styles.optionText}>30s/15s</Text>
+						<Switch
+							value={this.props.timersState.timer30s15s}
+							onValueChange={on => { this.toggleTimer(TOGGLE_TIMER_30S_15S, on)}}
+						/>
+					</View>
+				</ScrollView>
 			</SafeAreaView>
 		);
 	}
@@ -62,8 +70,21 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		padding: RootStyles.gutterDefault, // Padding doesn't work on SafeAreaView
+		width: '100%',
 		maxWidth: 700,
 		margin: 'auto'
+	},
+	optionContainer: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		paddingVertical: RootStyles.gutterDefault / 2,
+		borderBottomWidth: StyleSheet.hairlineWidth,
+		borderColor: RootStyles.colorLightGrey
+	},
+	optionText: {
+		color: '#ffffff',
+		fontSize: RootStyles.textSizeDefault
 	}
 });
 

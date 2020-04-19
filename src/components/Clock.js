@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dimensions, View, StyleSheet, Text } from 'react-native'
+import { Dimensions, View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import RootStyles from '../styles/root'
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -72,7 +72,9 @@ class Clock extends React.Component {
 					<View style={[styles.sideInfoContainer, styles.hours]}>
 						<Text style={[styles.sideInfo, {color: clockColor}]}>{hours > 0 ? hours : ' '}</Text>
 					</View>
-					<Text style={[styles.time, {color: clockColor}]}>{minutes}:{seconds}</Text>
+					<TouchableOpacity onLongPress={this.props.onLongPress}>
+						<Text style={[styles.time, {color: clockColor}]}>{minutes}:{seconds}</Text>
+					</TouchableOpacity>
 					<View style={styles.sideInfoContainer}>
 						<Text style={styles.sideInfo}>{lap > -1 ? lap : ' '}</Text>
 						<Text style={[styles.sideInfo, {color: clockColor}]}>{milliseconds > 0 ? milliseconds : ' '}</Text>
