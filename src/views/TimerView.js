@@ -1,6 +1,6 @@
 import React from 'react'
-import { Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, Vibration, View } from 'react-native';
 import { connect } from 'react-redux';
+import { Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, Vibration, View } from 'react-native';
 import AppRoutes from '../navigation/routes/appRoutes';
 import RootStyles from '../styles/root'
 import Clock from '../components/Clock'

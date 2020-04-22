@@ -1,6 +1,6 @@
 import React from 'react'
-import { Platform, SafeAreaView, ScrollView, StatusBar, StyleSheet, Switch, View, Text } from 'react-native';
 import { connect } from 'react-redux';
+import { Platform, SafeAreaView, ScrollView, StatusBar, StyleSheet, Switch, View, Text } from 'react-native';
 import RootStyles from '../styles/root';
 import {
 	TOGGLE_TIMER_30S,
