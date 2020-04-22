@@ -31,9 +31,9 @@ function toggleTimersReducer(state = initialTimersState, action) {
 			return { ...state, timer2min: action.value };
 		case TOGGLE_TIMER_30S_15S:
 			return { ...state, timer30s15s: action.value };
-		default:
-			return state; // Returning a spreaded copy of the state doesn't work somehow { ...state }
 	}
+
+	return state; // Returning a spreaded copy of the state doesn't work somehow { ...state }
 }
 
 const rootReducer = combineReducers({ toggleTimersReducer });
