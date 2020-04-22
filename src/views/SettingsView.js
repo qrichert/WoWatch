@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		paddingVertical: RootStyles.gutterDefault / 2,
+		paddingVertical: RootStyles.gutterDefault,
 		borderBottomWidth: StyleSheet.hairlineWidth,
 		borderColor: RootStyles.colorLightGrey
 	},
