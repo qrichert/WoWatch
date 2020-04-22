@@ -198,6 +198,12 @@ class TimerView extends React.Component {
 							onPress={() => { this.startTimer(60); }}
 							onLongPress={() => { this.startTimer(60, true); }}
 						/>}
+						{this.props.timersState.timer1min30 &&
+						<CustomButton
+							 text="1'30&quot;"
+							 onPress={() => { this.startTimer(90); }}
+							 onLongPress={() => { this.startTimer(90, true); }}
+						/>}
 						{this.props.timersState.timer2min &&
 						<CustomButton
 							text="2 min"

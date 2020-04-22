@@ -1,10 +1,11 @@
 import React from 'react'
-import { Platform, SafeAreaView, ScrollView, StatusBar, StyleSheet, Switch, View, Text, Dimensions } from 'react-native';
+import { Platform, SafeAreaView, ScrollView, StatusBar, StyleSheet, Switch, View, Text } from 'react-native';
 import { connect } from 'react-redux';
 import RootStyles from '../styles/root';
 import {
 	TOGGLE_TIMER_30S,
 	TOGGLE_TIMER_1MIN,
+	TOGGLE_TIMER_1MIN30,
 	TOGGLE_TIMER_2MIN,
 	TOGGLE_TIMER_30S_15S
 } from '../store/actions/settingsActions';
@@ -32,6 +33,14 @@ class SettingsView extends React.Component {
 						<Switch
 							value={this.props.timersState.timer1min}
 							onValueChange={on => { this.toggleTimer(TOGGLE_TIMER_1MIN, on)}}
+						/>
+					</View>
+
+					<View style={styles.optionContainer}>
+						<Text style={styles.optionText}>1'30"</Text>
+						<Switch
+							value={this.props.timersState.timer1min30}
+							onValueChange={on => { this.toggleTimer(TOGGLE_TIMER_1MIN30, on)}}
 						/>
 					</View>
 
