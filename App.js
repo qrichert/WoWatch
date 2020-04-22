@@ -1,8 +1,8 @@
 import React from 'react';
-import { StatusBar, View } from 'react-native';
 import { Provider } from 'react-redux';
-import { store, persistor } from './src/store';
 import { PersistGate } from 'redux-persist/integration/react'
+import { store, persistor } from './src/store';
+import { StatusBar, View } from 'react-native';
 import AppStackNavigator from './src/navigation/AppStackNavigator';
 
 export default function App() {
