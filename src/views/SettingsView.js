@@ -1,5 +1,5 @@
 import React from 'react'
-import { Platform, SafeAreaView, ScrollView, StatusBar, StyleSheet, Switch, View, Text } from 'react-native';
+import { Platform, SafeAreaView, ScrollView, StatusBar, StyleSheet, Switch, View, Text, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import RootStyles from '../styles/root';
 import {
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		paddingVertical: RootStyles.gutterDefault,
+		paddingVertical: RootStyles.gutterMedium,
 		borderBottomWidth: StyleSheet.hairlineWidth,
 		borderColor: RootStyles.colorLightGrey
 	},

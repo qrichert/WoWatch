@@ -4,6 +4,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 
 let RootStyles = {
 	gutterDefault: 20,
+	gutterMedium: 15,
 	buttonSize: 72,
 	textSizeDefault: 19,
 	colorHighlight: '#ff9f0b',
@@ -14,7 +15,8 @@ let RootStyles = {
 if (SCREEN_WIDTH <= 320) { // iPhone SE = 320
 	RootStyles = {
 		...RootStyles,
-		gutterDefault: 10
+		gutterDefault: 10,
+		gutterMedium: 7
 	}
 }
 
