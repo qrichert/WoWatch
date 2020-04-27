@@ -214,7 +214,7 @@ class TimerView extends React.Component {
 						<CustomButton
 							text="30s/15s"
 							onPress={() => { this.startTimer([30, 15], true); }}
-							onLongPress={() => { this.startTimer([30, 15]); }}
+							onLongPress={() => { this.startTimer([15, 30], true); }}
 							backdropColor={RootStyles.colorPurpleAcid}
 							highlightColor={'white'}
 						/>}

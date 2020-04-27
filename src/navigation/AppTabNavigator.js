@@ -17,7 +17,7 @@ export default function AppTabNavigator() {
 				initialRouteName={AppRoutes.TIMER}
 				tabBarOptions={{
 					activeTintColor: RootStyles.colorHighlight,
-					showLabels: false,
+					showLabel: false
 				}}
 				screenOptions={({route}) => ({
 					tabBarIcon: ({color, size}) => {
