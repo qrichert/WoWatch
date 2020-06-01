@@ -5,7 +5,8 @@ import {
 	TOGGLE_TIMER_1MIN,
 	TOGGLE_TIMER_1MIN30,
 	TOGGLE_TIMER_2MIN,
-	TOGGLE_TIMER_30S_15S
+	TOGGLE_TIMER_30S_15S,
+	TOGGLE_TIMER_45S_15S,
 } from '../actions/settingsActions';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -15,27 +16,30 @@ const initialTimersState = {
 	timer1min: true,
 	timer1min30: SCREEN_WIDTH > 320,
 	timer2min: false,
-	timer30s15s: true
+	timer30s15s: true,
+	timer45s15s: false,
 };
 
 function toggleTimersReducer(state = initialTimersState, action) {
 
 	switch (action.type) {
 		case TOGGLE_TIMER_30S:
-			return { ...state, timer30s: action.value };
+			return {...state, timer30s: action.value};
 		case TOGGLE_TIMER_1MIN:
-			return { ...state, timer1min: action.value };
+			return {...state, timer1min: action.value};
 		case TOGGLE_TIMER_1MIN30:
-			return { ...state, timer1min30: action.value };
+			return {...state, timer1min30: action.value};
 		case TOGGLE_TIMER_2MIN:
-			return { ...state, timer2min: action.value };
+			return {...state, timer2min: action.value};
 		case TOGGLE_TIMER_30S_15S:
-			return { ...state, timer30s15s: action.value };
+			return {...state, timer30s15s: action.value};
+		case TOGGLE_TIMER_45S_15S:
+			return {...state, timer45s15s: action.value};
 	}
 
 	return state; // Returning a spreaded copy of the state doesn't work somehow { ...state }
 }
 
-const rootReducer = combineReducers({ toggleTimersReducer });
+const rootReducer = combineReducers({toggleTimersReducer});
 
 export default rootReducer;

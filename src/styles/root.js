@@ -9,6 +9,7 @@ let RootStyles = {
 	textSizeDefault: 19,
 	colorHighlight: '#ff9f0b',
 	colorPurpleAcid: '#8900ff',
+	colorGreenAcid: '#1ed400',
 	colorLightGrey: '#323235'
 };
 

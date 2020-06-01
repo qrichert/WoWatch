@@ -216,7 +216,13 @@ class TimerView extends React.Component {
 							onPress={() => { this.startTimer([30, 15], true); }}
 							onLongPress={() => { this.startTimer([15, 30], true); }}
 							backdropColor={RootStyles.colorPurpleAcid}
-							highlightColor={'white'}
+						/>}
+						{this.props.timersState.timer45s15s &&
+						<CustomButton
+							text="45s/15s"
+							onPress={() => { this.startTimer([45, 15], true); }}
+							onLongPress={() => { this.startTimer([15, 45], true); }}
+							backdropColor={RootStyles.colorGreenAcid}
 						/>}
 
 						{/*

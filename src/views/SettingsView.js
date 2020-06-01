@@ -7,13 +7,14 @@ import {
 	TOGGLE_TIMER_1MIN,
 	TOGGLE_TIMER_1MIN30,
 	TOGGLE_TIMER_2MIN,
-	TOGGLE_TIMER_30S_15S
+	TOGGLE_TIMER_30S_15S,
+	TOGGLE_TIMER_45S_15S,
 } from '../store/actions/settingsActions';
 
 class SettingsView extends React.Component {
 
 	toggleTimer(type, value) {
-		this.props.dispatch({ type, value });
+		this.props.dispatch({type, value});
 	}
 
 	render() {
@@ -27,7 +28,6 @@ class SettingsView extends React.Component {
 							onValueChange={on => { this.toggleTimer(TOGGLE_TIMER_30S, on)}}
 						/>
 					</View>
-
 					<View style={styles.optionContainer}>
 						<Text style={styles.optionText}>1 min</Text>
 						<Switch
@@ -35,7 +35,6 @@ class SettingsView extends React.Component {
 							onValueChange={on => { this.toggleTimer(TOGGLE_TIMER_1MIN, on)}}
 						/>
 					</View>
-
 					<View style={styles.optionContainer}>
 						<Text style={styles.optionText}>1'30"</Text>
 						<Switch
@@ -43,7 +42,6 @@ class SettingsView extends React.Component {
 							onValueChange={on => { this.toggleTimer(TOGGLE_TIMER_1MIN30, on)}}
 						/>
 					</View>
-
 					<View style={styles.optionContainer}>
 						<Text style={styles.optionText}>2 min</Text>
 						<Switch
@@ -51,12 +49,18 @@ class SettingsView extends React.Component {
 							onValueChange={on => { this.toggleTimer(TOGGLE_TIMER_2MIN, on)}}
 						/>
 					</View>
-
 					<View style={styles.optionContainer}>
 						<Text style={styles.optionText}>30s/15s</Text>
 						<Switch
 							value={this.props.timersState.timer30s15s}
 							onValueChange={on => { this.toggleTimer(TOGGLE_TIMER_30S_15S, on)}}
+						/>
+					</View>
+					<View style={styles.optionContainer}>
+						<Text style={styles.optionText}>45s/15s</Text>
+						<Switch
+							value={this.props.timersState.timer45s15s}
+							onValueChange={on => { this.toggleTimer(TOGGLE_TIMER_45S_15S, on)}}
 						/>
 					</View>
 				</ScrollView>
