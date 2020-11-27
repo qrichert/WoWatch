@@ -18,8 +18,8 @@ class Clock extends React.Component {
 
 		if (time > 0)
 			progress *= 1 - (time / 10);
-		else
-			progress = 1;
+		// else
+		// 	progress *= 1;
 
 		let hue = 0;
 
